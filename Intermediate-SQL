@@ -1,17 +1,17 @@
-SQL AGGREGATE FUNCTION:
+AGGREGATE FUNCTION:
 Similar to a pivot table in excel. 
 count - count the no of rows | sum | min/max | avg
-sum, avg can be used only on numeric values, others can be used on both numeric and non numeric values. 
+sum, avg can be used only on numeric values | max/min, count can be used on both numeric and non numeric values. 
 ------------------------------------------------------------------------------
 -COUNT: 
-count(*) will tell the total no of rows | count(col1) will tell the total number of rows in which col1 is not null. 
-If there is a space between the words, then " " is to be used - as “column name” | ' '  doesn't work 
+count(*) finds the total no of rows | count(col1) finds the total number of rows in which col1 is not null. 
+If there is a space between the words in column name , then " " is to be used - as “sum of values” | ' '  doesn't work 
 ------------------------------------------------------------------------------
 -SUM:
-sum(col1) will sum the values across all rows in col1.
+sum(col1) sums the values across all rows in col1.
 ------------------------------------------------------------------------------	
 -MIN/MAX:
-min can be used to retrieve the lowest no, alphabetical ordered word, or date | max can be used to do the opposite 
+min used to retrieve the lowest no, alphabetical ordered word, or minimum date | max used to do the opposite 
 What was the highest single-day increase in Apple's share value?
 \
 select max((close - open)) as highest_difference
@@ -25,8 +25,8 @@ select avg(volume)
 from tutorial.aapl_historical_stock_price
 \
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------
-SQL GROUP BY:
-The functions mentioned above will aggregate the whole table and return a one cell output. 
+GROUP BY:
+Aggregate functions mentioned above aggregates the whole table and return a one cell output. 
 Using groupby will aggregate different groups in the table and return multiple cells output | Can mention multiple criterias too in group by - group by a,b 
 Group by is to be used along with aggregation such as count, sum, max, min or avg 
 Calculate the total number of shares traded each month. Order your results chronologically.
@@ -51,11 +51,11 @@ group by year, month
 order by 1, 2
 \
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------
-SQL HAVING:
+HAVING:
 Filtering based on condition in aggregated columns. 
 Order of code -> select - from - where - group by - having - order by 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------
-SQL CASE:
+CASE:
 If else logic in sql to create a new column in the query
 Order of code -> case - when - then - else - end as 
 When the year is ‘SR’, then ‘Yes’, else a null value. 
@@ -90,7 +90,7 @@ select player_name,
    	else 'Below Average'
    	end as height_status
 from benn.college_football_players
-#While giving comparison conditions, start from the highest value and then proceed down. Can give multiple conditions using conditional operators like and, or.
+#Comparison conditions to be given from the highest value and then lower values. Can give multiple conditions using conditional operators - and, or.
 \
 Write a query that selects all columns from benn.college_football_players and adds an additional column that displays the player's name if that player is a junior or senior.
 \
@@ -122,7 +122,7 @@ select case when state in ('CA','OR','WA') then 'West_Coast'
 from benn.college_football_players
 where weight >= 300
 group by state_status
-#No need to give the column name inside ‘ ‘ after end as 
+#No need to give the column name inside ' ' after end as 
 \
 Write a query that calculates the combined weight of all underclass players (FR/SO) in California as well as the combined weight of all upperclass players (JR/SR) in California.
 \
@@ -160,8 +160,8 @@ from benn.college_football_players
 group by schoolname_status
 #No need to give comma between the cases statements | No need to give ‘ ‘ for the end as column name in case statement 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------
-SQL DISTINCT:
-select distinct month will give all the distinct months | select distinct month,year will give all distinct pairs of month and year
+DISTINCT:
+select distinct month will give all the distinct months | select distinct month, year will give all distinct pairs of month and year
 Distinct generally used in tandem with count 
 Write a query that counts the number of unique values in the month column for each year.
 \
@@ -175,9 +175,9 @@ select count(distinct month) as unique_month, count(distinct year) as unique_yea
 from tutorial.aapl_historical_stock_price
 \
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------
-SQL JOINS:
+JOINS:
 Joining multiple tables
-Mapping between two tables using on on the join keys/foreign keys 
+Mapping between two tables using 'on' on the join keys/foreign keys 
 Alias for table 1 as t1 and table 2 as t2 | t1.* will select all columns from t1
 ------------------------------------------------------------------------------
 INNER JOIN:
@@ -191,7 +191,6 @@ Returns all rows from the left table and the matched rows from the right table
 ------------------------------------------------------------------------------
 RIGHT JOIN:
 Returns all rows from the right table and the matched rows from the left table
-
 Write a query that displays player names, school names and conferences for schools in the "FBS (Division I-A Teams)" division.
 \
 select p.player_name,
