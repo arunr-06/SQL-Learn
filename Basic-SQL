@@ -1,0 +1,159 @@
+SELECT:
+Select and from form the basic structure of a query. They don’t make change to the underlying table. 
+Select - indicates the column to be retrieved | From - indicates the table to be retrieved from | * - retrieve all columns from the table
+Can run only 1 select statement at a time | No comma to be mentioned after the last column name 
+Renaming columns - select west as "west region" (or) select west as west_region
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+LIMIT:
+Sets a limit on the number of rows to be retrieved | Prevents the query from taking too long to execute
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+WHERE:
+Filter the data using conditions
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+COMPARISON OPERATORS:
+Used in tandem with where | =,!=,>,<,>=,<= | Can use it in strings too, but need to mention it inside ‘ ‘ 
+\
+select *
+from tutorial.us_housing_units
+where month_name < 'O'
+\
+month > ‘January’ will print months which come after J | If month > ‘J’, it will post January as well, because Ja comes after ‘J’
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ARITHMETIC OPERATORS:
+Can perform arithmetic operations only across columns and not across rows | Aggregate functions need to be used to performs across rows  
+col1 + col2 as col3 | New column col3 is called a derived column since the value is computed from other columns
+Can mention select *, colname from tablename - derived column name after mentioning all the column names using *
+\
+select month_name, south + west + midwest + northeast as total_value
+from tutorial.us_housing_units
+\
+Parentheses used for order of operation - add the value of west and south first and then divide it by 2 - (west + south)/2 AS south_west_avg
+\
+select *,
+  	(west/(west+south+midwest+northeast))*100 as west_share,
+  	(south/(west+south+midwest+northeast))*100 as south_share,
+  	(midwest/(west+south+midwest+northeast))*100 as midwest_share,
+  	(northeast/(west+south+midwest+northeast))*100 as northeast_share
+from tutorial.us_housing_units
+where year >= 2000
+limit 30
+\
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+LOGICAL OPERATORS:
+Helps in using multiple comparison operators in one query 
+like - match similar values, instead of exact values | in - list of values | between -  range specified 
+is null - no values | and - both statements to be true | or - any one true | not - do not match a certain condition
+--------------------------------------------------------------------------
+-LIKE: 
+where "group" like 'Snoop%' 
+Since group is the name of a function in sql, it is mentioned inside “ “ |  “ ” is a way to tell SQL that it is a column name. ‘ ‘  doesn’t work.
+Wildcards - % - characters will follow. _ - one character to be placed. 
+\
+select *
+from tutorial.billboard_top_100_year_end
+where "group" like '%Ludacris%'
+\
+--------------------------------------------------------------------------
+-ILIKE:
+where "group" ilike 'snoop%' 
+like is case sensitive but ilike is not | ilike returns values - snoop or Snoop or SNOOP or snOoP
+--------------------------------------------------------------------------
+-IN:
+Values inside in operator to be mentioned between ( ) and separated by , .Non numeric characters to be mentioned inside ‘ ‘.
+\
+select *
+from tutorial.billboard_top_100_year_end
+where artist in ('Jan Hammer', 'M.C. Hammer', 'Hammer', 'Elvis Presley')
+--------------------------------------------------------------------------
+-BETWEEN:
+To be paired with the AND operator. No need for brackets. 
+Between 5 and 10 will return values including 5 and 10 | where x between 5 and 10 is similar to where x >=5 and x <=10
+--------------------------------------------------------------------------
+-IS NULL:
+Excludes the whole row where a certain field is null.
+Select rows where artist field is null
+\
+select *
+from tutorial.billboard_top_100_year_end
+where artist ISNULL
+\
+--------------------------------------------------------------------------
+-AND:
+Multiple and operators to select based on multiple conditions.
+Write a query that surfaces all rows for top-10 hits for which Ludacris is part of the Group.
+\
+select *
+from tutorial.billboard_top_100_year_end
+where "group" ilike '%ludacris%' and year_rank <= 10
+\
+Write a query that surfaces the top-ranked records in 1990, 2000, and 2010.
+\
+select *
+from tutorial.billboard_top_100_year_end
+where year in (1990,2000,2010) and year_rank = 1
+\
+Write a query that lists all songs from the 1960s with "love" in the title.
+\
+select *
+from tutorial.billboard_top_100_year_end
+where song_name ilike '%love%' and year between 1960 and 1969
+\
+--------------------------------------------------------------------------
+-OR:
+Satisfy any one of the conditions | Can combine multiple ‘and’ and ‘or’ using parentheses.
+Write a query that returns all rows for top-10 songs that featured either Katy Perry or Bon Jovi.
+\
+select *
+from tutorial.billboard_top_100_year_end
+where ("group" ilike '%Katy Perry%' or "group" ilike '%Bon Jovi%') and year_rank <= 10
+\
+Write a query that returns all songs with titles that contain the word "California" in either the 1970s or 1990s.
+\
+select *
+from tutorial.billboard_top_100_year_end
+where song_name like '%California%'
+and (year between 1970 and 1979 or year between 1990 and 1999)
+\
+Write a query that lists all top-100 recordings that feature Dr. Dre before 2001 or after 2009.
+\
+select *
+from tutorial.billboard_top_100_year_end
+where "group" ilike '%Dr. Dre%'
+and (year < 2001 or year > 2009)
+\
+--------------------------------------------------------------------------
+-NOT:
+Placed between conditional statements to retrieve values which are false | Commonly used with like - not like, is null - is not null. 
+Write a query that returns all rows for songs that were on the charts in 2013 and do not contain the letter "a".
+\
+select *
+from tutorial.billboard_top_100_year_end
+where year = 2013 and song_name not like '%a%'
+\
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+SQL ORDER BY:
+Order by can be used for numeric and non-numeric values | Order by column1 desc will sort it in descending order. 
+Order by column1, column2 will sort first by column1 and then column2 (Need to use , to add criterias)
+Order by 2, 1 (2, 1 represents the second and first column in the select statement)
+Write a query that returns all rows from 2010 ordered by rank, with artists ordered alphabetically for each song.
+\
+select *
+from tutorial.billboard_top_100_year_end
+where year = 2010
+order by year_rank, artist
+\
+Write a query that shows all rows for which T-Pain was a group member, ordered by rank on the charts, from lowest to highest rank (from 100 to 1).
+\
+select *
+from tutorial.billboard_top_100_year_end
+where "group" ilike '%T-Pain%'
+order by year_rank desc
+\
+Write a query that returns songs that ranked between 10 and 20 (inclusive) in 1993, 2003, or 2013. Order the results by year and rank, and leave a comment on each line of the WHERE clause to indicate what that line does
+\
+select *
+from tutorial.billboard_top_100_year_end
+where year_rank between 10 and 20
+and year in (1993, 2003, 2013)
+order by year, year_rank
+\
